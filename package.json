@@ -1,7 +1,7 @@
 {
-  "name": "frappe_lms",
+  "name": "pramitya_lms",
   "version": "1.0.0",
-  "description": "Easy to use, open-source, Learning Management System",
+  "description": "Open source learning management system with AI viva assessments",
   "type": "module",
   "workspaces1": [
     "frappe-ui",
@@ -16,14 +16,14 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frappe/lms.git"
+    "url": "git+https://pramitya.local/source.git"
   },
-  "author": "Frappe",
+  "author": "Pramitya",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/frappe/lms/issues"
+    "url": "https://pramitya.local/support"
   },
-  "homepage": "https://github.com/frappe/lms#readme",
+  "homepage": "https://pramitya.local/lms",
   "engines": {
     "node": ">=22"
   },
