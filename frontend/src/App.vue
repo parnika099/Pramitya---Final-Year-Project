@@ -25,7 +25,10 @@ const noSidebar = ref(false)
 const { settings } = useSettings()
 
 router.beforeEach((to, from, next) => {
-	if (to.query.fromLesson || to.path === '/persona') {
+	const aiVivaPath =
+		to.name === 'CourseAiViva' ||
+		(to.path.includes('/courses/') && /\/courses\/[^/]+\/ai-viva\/?$/.test(to.path))
+	if (to.query.fromLesson || to.path === '/persona' || aiVivaPath || to.meta.publicShell) {
 		noSidebar.value = true
 	} else {
 		noSidebar.value = false
