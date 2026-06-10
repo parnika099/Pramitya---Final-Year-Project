@@ -1,9 +1,9 @@
 <div align="center" markdown="1">
 
-<img src=".github/lms-logo.png" alt="Frappe Learning logo" width="80" height="80"/>
-<h1>Frappe Learning</h1>
+<img src="docs/images/lms-logo.png" alt="Pramitya logo" width="80" height="80"/>
+<h1>Pramitya</h1>
 
-**Easy to use, open source, Learning Management System**
+**Open source learning management system with AI viva assessments**
 
 ![Tests](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/vandxn/main&style=flat&logo=cypress)
 
@@ -11,17 +11,17 @@
 
 
 <div align="center">
-	<img src=".github/hero.png?v=5" alt="Hero Image" width="72%" />
+	<img src="docs/images/hero.png?v=5" alt="Hero Image" width="72%" />
 </div>
 <br />
 <div align="center">
-	<a href="https://frappe.io/learning">Website</a>
+	<a href="/lms">Website</a>
 	-
-	<a href="https://docs.frappe.io/learning">Documentation</a>
+	<a href="/lms">Documentation</a>
 </div>
 
-## Frappe Learning
-Frappe Learning is an easy-to-use learning system that helps you bring structure to your content.
+## Pramitya
+Pramitya is an easy-to-use learning system that helps you bring structure to your content and assess learners with AI viva sessions.
 
 ### Motivation
 In 2021, we were looking for a Learning Management System to launch [Mon.School](https://mon.school) for FOSS United. We checked out Moodle, but it didn’t feel right. The forms were unnecessarily lengthy and the UI was confusing. It shouldn't be this hard to create a course right? So I started making a learning system for Mon.School which soon became a product in itself. The aim is to have a simple platform that anyone can use to launch a course of their own and make knowledge sharing easier.
@@ -40,7 +40,7 @@ In 2021, we were looking for a Learning Management System to launch [Mon.School]
 <summary>View Screenshots</summary>
 
 
-![Batch](.github/batch.png)
+![Batch](docs/images/batch.png)
 <div align="center">
 	<sub>
 		Create batches to group your learners
@@ -49,7 +49,7 @@ In 2021, we were looking for a Learning Management System to launch [Mon.School]
 <br>
 
 
-![Quiz](.github/quiz.png)
+![Quiz](docs/images/quiz.png)
 <div align="center">
 	<sub>
 		Evaluate their knowledge by quizzes
@@ -58,7 +58,7 @@ In 2021, we were looking for a Learning Management System to launch [Mon.School]
 <br>
 
 
-![Cerficicate](.github/certificate.png)
+![Cerficicate](docs/images/certificate.png)
 <div align="center">
 	<sub>
 		Autenticate their work with certification
@@ -75,52 +75,24 @@ In 2021, we were looking for a Learning Management System to launch [Mon.School]
 
 ## Production Setup
 
-### Managed Hosting
+### Azure Single-VM Deployment
 
-You can try [Frappe Cloud](https://frappecloud.com), a simple, user-friendly and sophisticated [open-source](https://github.com/frappe/press) platform to host Frappe applications with peace of mind.
-
-It takes care of installation, setup, upgrades, monitoring, maintenance and support of your Frappe deployments. It is a fully featured developer platform with an ability to manage and control multiple Frappe deployments.
-
-<div>
-	<a href="https://frappecloud.com/lms/signup" target="_blank">
-		<picture>
-			<source media="(prefers-color-scheme: dark)" srcset="https://frappe.io/files/try-on-fc-white.png">
-			<img src="https://frappe.io/files/try-on-fc-black.png" alt="Try on Frappe Cloud" height="28" />
-		</picture>
-	</a>
-</div>
-
-### Self Hosting
-
-Follow these steps to set up Frappe Learning in production:
-
-**Step 1**: Download the easy install script
+The Pramitya deployment path in this repository provisions a small Azure VM, uploads the current source tree, and starts Docker Compose with MariaDB, Redis, Frappe bench, and Caddy.
 
 ```bash
-wget https://frappe.io/easy-install.py
+./scripts/deploy-pramitya-azure.sh
 ```
 
-**Step 2**: Run the deployment command
+Optional environment variables:
 
 ```bash
-python3 ./easy-install.py deploy \
-    --project=learning_prod_setup \
-    --email=your_email.example.com \
-    --image=ghcr.io/frappe/lms \
-    --version=stable \
-    --app=lms \
-    --sitename subdomain.domain.tld
+AZURE_LOCATION=centralindia
+AZURE_VM_SIZE=Standard_B1ms
+AZURE_DNS_LABEL=pramitya
+PRAMITYA_DOMAIN=example.com
 ```
 
-Replace the following parameters with your values:
-- `your_email.example.com`: Your email address
-- `subdomain.domain.tld`: Your domain name where Learning will be hosted
-
-The script will set up a production-ready instance of Frappe Learning with all the necessary configurations in about 5 minutes.
-
-**Note:** To avoid a `404 Page Not Found` error:
-- If hosting on a **public server**, make sure your DNS **A record** points to your server's IP.
-- If hosting **locally**, map your domain to `127.0.0.1` in your `/etc/hosts` file:
+When `PRAMITYA_DOMAIN` is set, the script creates an Azure DNS zone and an A record for `pramitya.example.com`. Delegate the domain to the Azure nameservers printed by the script.
 
 ## Development Setup
 
@@ -130,14 +102,14 @@ You need Docker, docker-compose and git setup on your machine. Refer [Docker doc
 
 **Step 1**: Setup folder and download the required files
 
-    mkdir frappe-learning
-    cd frappe-learning
+    mkdir pramitya
+    cd pramitya
 
     # Download the docker-compose file
-    wget -O docker-compose.yml https://raw.githubusercontent.com/frappe/lms/develop/docker/docker-compose.yml
+    cp /path/to/repo/docker/docker-compose.yml docker-compose.yml
 
     # Download the setup script
-    wget -O init.sh https://raw.githubusercontent.com/frappe/lms/develop/docker/init.sh
+    cp /path/to/repo/docker/init.sh init.sh
 
 **Step 2**: Run the container and daemonize it
 
@@ -155,16 +127,13 @@ To setup the repository locally follow the steps mentioned below:
 1. Start the server by running `bench start`
 1. In a separate terminal window, create a new site by running `bench new-site learning.test`
 1. Map your site to localhost with the command `bench --site learning.test add-to-hosts`
-1. Get the Learning app. Run `bench get-app https://github.com/frappe/lms`
+1. Get the Pramitya app from this repository.
 1. Run `bench --site learning.test install-app lms`.
 1. Now open the URL `http://learning.test:8000/lms` in your browser, you should see the app running
 
 ## Learn and connect
 
-- [Telegram Public Group](https://t.me/frappelms)
-- [Discuss Forum](https://discuss.frappe.io/c/lms/70)
-- [Documentation](https://docs.frappe.io/learning)
-- [YouTube](https://www.youtube.com/channel/UCn3bV5kx77HsVwtnlCeEi_A)
+- [Frappe Framework](https://frappeframework.com/docs)
 
 <br>
 <br>
