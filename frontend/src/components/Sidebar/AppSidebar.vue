@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex h-full flex-col justify-between transition-all duration-300 ease-in-out border-r bg-surface-menu-bar overflow-x-hidden"
+		class="flex h-full flex-col justify-between overflow-x-hidden border-r border-[#dce1ef] bg-white transition-all duration-300 ease-in-out"
 		:class="sidebarStore.isSidebarCollapsed ? 'w-14' : 'w-56'"
 	>
 		<div
@@ -184,7 +184,7 @@
 					</Tooltip>
 					<Tooltip
 						v-if="showAppointmentIcon"
-						:text="__('Book a free onboarding session with the Frappe team')"
+						:text="__('Contact support')"
 					>
 						<Phone
 							class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer"
@@ -202,7 +202,7 @@
 							"
 						/>
 					</Tooltip>
-					<Tooltip :text="__('Powered by Frappe Learning')">
+					<Tooltip :text="__('Unnati Development Institute')">
 						<Zap
 							class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer"
 							@click="redirectToWebsite()"
@@ -229,13 +229,13 @@
 			v-model="showHelpModal"
 			v-model:articles="articles"
 			appName="learning"
-			title="Frappe Learning"
+			title="Unnati LMS"
 			:logo="LMSLogo"
 			:afterSkip="(step) => capture('onboarding_step_skipped_' + step)"
 			:afterSkipAll="() => capture('onboarding_steps_skipped')"
 			:afterReset="(step) => capture('onboarding_step_reset_' + step)"
 			:afterResetAll="() => capture('onboarding_steps_reset')"
-			docsLink="https://docs.frappe.io/learning"
+			docsLink="/lms"
 		/>
 		<IntermediateStepModal
 			v-model="showIntermediateModal"
@@ -673,7 +673,7 @@ const updateSidebarLinks = () => {
 }
 
 const redirectToWebsite = () => {
-	window.open('https://frappe.io/learning', '_blank')
+	router.push({ name: 'Home' })
 }
 
 const isStudent = computed(() => {
@@ -689,16 +689,7 @@ const profileIsComplete = computed(() => {
 })
 
 const showAppointmentIcon = computed(() => {
-	let isTrialPlan = userResource.data?.site_info?.plan?.is_trial_plan
-	let trialEndDate = calculateTrialEndDays(
-		userResource.data?.site_info?.trial_end_date
-	)
-	return (
-		userResource.data?.is_system_manager &&
-		userResource.data?.is_fc_site &&
-		isTrialPlan &&
-		trialEndDate > 0
-	)
+	return false
 })
 
 const calculateTrialEndDays = (trialEndDate) => {

@@ -2,9 +2,7 @@
 	<button
 		v-if="link && !link.onlyMobile"
 		class="flex w-full h-7 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3"
-		:class="
-			isActive ? 'bg-surface-selected shadow-sm' : 'hover:bg-surface-gray-2'
-		"
+		:class="isActive ? 'bg-[#e8ecfa] text-[#303b78] shadow-sm' : 'hover:bg-[#f3f5fa]'"
 		@click="handleClick"
 	>
 		<div
@@ -16,7 +14,8 @@
 					<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
 						<component
 							:is="icons[link.icon]"
-							class="h-4 w-4 stroke-1.5 text-ink-gray-8"
+							class="h-4 w-4 stroke-1.5"
+							:class="isActive ? 'text-[#303b78]' : 'text-ink-gray-8'"
 						/>
 					</span>
 				</slot>
