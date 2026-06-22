@@ -1,6 +1,7 @@
 <template>
 	<div class="flex h-full flex-col relative">
-		<div class="h-full pb-10" id="scrollContainer">
+		<InstitutionHeader />
+		<div class="h-full overflow-auto bg-[#f3f5fa] pb-16" id="scrollContainer">
 			<slot />
 		</div>
 
@@ -62,6 +63,7 @@ import { sessionStore } from '@/stores/session'
 import { useSettings } from '@/stores/settings'
 import { usersStore } from '@/stores/user'
 import * as icons from 'lucide-vue-next'
+import InstitutionHeader from '@/components/InstitutionHeader.vue'
 
 const { logout, user } = sessionStore()
 let { isLoggedIn } = sessionStore()
