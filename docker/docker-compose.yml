@@ -19,14 +19,24 @@ services:
   frappe:
     image: frappe/bench:latest
     command: bash /workspace/init.sh
+    env_file:
+      - .env
     environment:
       - SHELL=/bin/bash
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY:-}
+      - DEEPGRAM_THINK_PROVIDER=${DEEPGRAM_THINK_PROVIDER:-}
+      - DEEPGRAM_THINK_MODEL=${DEEPGRAM_THINK_MODEL:-}
+      - DEEPGRAM_LISTEN_MODEL=${DEEPGRAM_LISTEN_MODEL:-}
+      - DEEPGRAM_SPEAK_MODEL=${DEEPGRAM_SPEAK_MODEL:-}
     working_dir: /home/frappe
     volumes:
       - .:/workspace
     ports:
       - 8000:8000
       - 9000:9000
+    depends_on:
+      - mariadb
+      - redis
 
 volumes:
   mariadb-data:

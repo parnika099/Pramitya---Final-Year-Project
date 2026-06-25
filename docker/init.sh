@@ -36,6 +36,21 @@ bench new-site lms.localhost \
 bench --site lms.localhost install-app payments
 bench --site lms.localhost install-app lms
 bench --site lms.localhost set-config developer_mode 1
+if [ -n "${DEEPGRAM_API_KEY:-}" ]; then
+	bench --site lms.localhost set-config deepgram_api_key "${DEEPGRAM_API_KEY}"
+fi
+if [ -n "${DEEPGRAM_THINK_PROVIDER:-}" ]; then
+	bench --site lms.localhost set-config deepgram_think_provider "${DEEPGRAM_THINK_PROVIDER}"
+fi
+if [ -n "${DEEPGRAM_THINK_MODEL:-}" ]; then
+	bench --site lms.localhost set-config deepgram_think_model "${DEEPGRAM_THINK_MODEL}"
+fi
+if [ -n "${DEEPGRAM_LISTEN_MODEL:-}" ]; then
+	bench --site lms.localhost set-config deepgram_listen_model "${DEEPGRAM_LISTEN_MODEL}"
+fi
+if [ -n "${DEEPGRAM_SPEAK_MODEL:-}" ]; then
+	bench --site lms.localhost set-config deepgram_speak_model "${DEEPGRAM_SPEAK_MODEL}"
+fi
 bench --site lms.localhost clear-cache
 bench use lms.localhost
 
