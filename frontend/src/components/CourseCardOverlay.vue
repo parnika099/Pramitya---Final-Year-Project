@@ -34,6 +34,20 @@
 							</span>
 						</Button>
 					</router-link>
+					<router-link
+						v-if="course.data.show_ai_viva_cta"
+						:to="{
+							name: 'CourseAiViva',
+							params: { courseName: course.data.name },
+						}"
+					>
+						<Button variant="solid" size="md" class="w-full">
+							<template #prefix>
+								<Mic class="size-4 stroke-1.5" />
+							</template>
+							<span>{{ __('AI Viva (oral exam)') }}</span>
+						</Button>
+					</router-link>
 					<CertificationLinks :courseName="course.data.name" class="w-full" />
 				</div>
 				<router-link
@@ -149,6 +163,7 @@ import {
 	BookText,
 	CreditCard,
 	GraduationCap,
+	Mic,
 	Pencil,
 	Star,
 	TrendingUp,

@@ -294,6 +294,49 @@
 						</div>
 					</div>
 
+					<div class="pr-5 md:pr-10 pb-5 space-y-5 border-b">
+						<div class="text-lg font-semibold mt-5 text-ink-gray-9">
+							{{ __('AI Viva') }}
+						</div>
+						<Switch
+							size="sm"
+							v-model="courseResource.doc.enable_ai_viva"
+							:label="__('Voice oral exam after completion')"
+							:description="
+								__(
+									'Students at 100% progress take a spoken exam via Deepgram (requires Deepgram API key).'
+								)
+							"
+							@change="makeFormDirty()"
+						/>
+						<div
+							v-if="courseResource.doc.enable_ai_viva"
+							class="grid grid-cols-1 md:grid-cols-2 gap-5"
+						>
+							<FormControl
+								type="number"
+								v-model="courseResource.doc.ai_viva_pass_score"
+								:label="__('Minimum pass score (0–100)')"
+								@change="makeFormDirty()"
+							/>
+							<FormControl
+								type="number"
+								v-model="courseResource.doc.ai_viva_max_attempts"
+								:label="__('Maximum attempts')"
+								@change="makeFormDirty()"
+							/>
+							<div class="md:col-span-2">
+								<FormControl
+									type="textarea"
+									:rows="4"
+									v-model="courseResource.doc.ai_viva_instructions"
+									:label="__('Brief for interviewer (prepended to system prompt)')"
+									@input="makeFormDirty()"
+								/>
+							</div>
+						</div>
+					</div>
+
 					<div class="pr-5 md:pr-10 pb-5 space-y-5">
 						<div class="text-lg font-semibold mt-5 text-ink-gray-9">
 							{{ __('Meta Tags') }}
