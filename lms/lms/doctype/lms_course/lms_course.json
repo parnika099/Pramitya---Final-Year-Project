@@ -49,7 +49,14 @@
   "enrollments",
   "lessons",
   "rating",
-  "notification_sent"
+  "notification_sent",
+  "tab_ai_viva_tab",
+  "ai_viva_section",
+  "enable_ai_viva",
+  "column_break_aiv_1",
+  "ai_viva_pass_score",
+  "ai_viva_max_attempts",
+  "ai_viva_instructions"
  ],
  "fields": [
   {
@@ -296,6 +303,54 @@
    "fieldtype": "Check",
    "label": "Notification Sent",
    "read_only": 1
+  },
+  {
+   "fieldname": "tab_ai_viva_tab",
+   "fieldtype": "Tab Break",
+   "label": "AI Viva"
+  },
+  {
+   "fieldname": "ai_viva_section",
+   "fieldtype": "Section Break",
+   "label": "Voice oral exam"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.published",
+   "description": "When enabled, students who reached 100% progress can complete a short spoken exam via Deepgram Voice Agent.",
+   "fieldname": "enable_ai_viva",
+   "fieldtype": "Check",
+   "label": "Enable AI Viva after course completion"
+  },
+  {
+   "depends_on": "eval:doc.enable_ai_viva",
+   "description": "Score from 0 to 100 inferred from transcript or shown as Needs review if missing.",
+   "fieldname": "ai_viva_pass_score",
+   "fieldtype": "Float",
+   "label": "Minimum pass score",
+   "default": "60",
+   "non_negative": 1
+  },
+  {
+   "depends_on": "eval:doc.enable_ai_viva",
+   "description": "Each started session counts; passed students cannot retake.",
+   "fieldname": "ai_viva_max_attempts",
+   "fieldtype": "Int",
+   "label": "Max attempts per student",
+   "default": "3",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_aiv_1",
+   "fieldtype": "Column Break",
+   "depends_on": "eval:doc.enable_ai_viva"
+  },
+  {
+   "depends_on": "eval:doc.enable_ai_viva",
+   "fieldname": "ai_viva_instructions",
+   "fieldtype": "Small Text",
+   "label": "Interviewer brief (prepended to system prompt)",
+   "description": "Describe topics, difficulty, tone, duration. The agent is instructed to end with EXACT_OUTPUT VIVA_SCORE:NN (0\u2013100)."
   }
  ],
  "is_published_field": "published",
@@ -310,6 +365,10 @@
   },
   {
    "link_doctype": "Course Lesson",
+   "link_fieldname": "course"
+  },
+  {
+   "link_doctype": "LMS AI Viva Session",
    "link_fieldname": "course"
   }
  ],
