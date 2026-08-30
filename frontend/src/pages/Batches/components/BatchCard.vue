@@ -6,6 +6,10 @@
 		<div class="text-lg leading-5 font-semibold mb-2 text-ink-gray-9">
 			{{ batch.title }}
 		</div>
+		<div v-if="batch.batch_code" class="mb-2 text-xs text-ink-gray-5">
+			{{ batch.batch_code }}
+			<span v-if="batch.academic_year"> · {{ batch.academic_year }}</span>
+		</div>
 		<Badge
 			v-if="batch.seat_count && batch.seats_left > 0"
 			variant="subtle"

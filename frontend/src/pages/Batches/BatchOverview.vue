@@ -5,6 +5,23 @@
 				<div class="text-3xl font-semibold text-ink-gray-9">
 					{{ batch.data.title }}
 				</div>
+				<div
+					v-if="batch.data.batch_code || batch.data.academic_year || batch.data.department"
+					class="mt-2 flex flex-wrap gap-2 text-sm text-ink-gray-7"
+				>
+					<span v-if="batch.data.batch_code" class="rounded-md border px-2 py-1">
+						{{ __('Batch ID') }} {{ batch.data.batch_code }}
+					</span>
+					<span v-if="batch.data.academic_year" class="rounded-md border px-2 py-1">
+						{{ batch.data.academic_year }}
+					</span>
+					<span v-if="batch.data.department" class="rounded-md border px-2 py-1">
+						{{ batch.data.department }}
+					</span>
+					<span v-if="batch.data.semester" class="rounded-md border px-2 py-1">
+						{{ batch.data.semester }}
+					</span>
+				</div>
 				<div class="my-3 leading-6 text-ink-gray-7">
 					{{ batch.data.description }}
 				</div>

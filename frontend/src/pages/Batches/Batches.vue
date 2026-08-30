@@ -62,7 +62,7 @@
 				<div class="grid grid-cols-2 gap-2">
 					<FormControl
 						v-model="title"
-						:placeholder="__('Search by Title')"
+						:placeholder="__('Search by title or Batch ID')"
 						type="text"
 						class="min-w-40 lg:min-w-0 lg:w-32 xl:w-40"
 						@input="updateBatches()"

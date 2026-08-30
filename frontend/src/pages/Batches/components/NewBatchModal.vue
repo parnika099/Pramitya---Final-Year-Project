@@ -58,6 +58,21 @@
 						:required="false"
 					/>
 					<FormControl
+						v-model="batch.academic_year"
+						:label="__('Academic Year')"
+						:placeholder="__('2026-27')"
+					/>
+					<FormControl
+						v-model="batch.department"
+						:label="__('Department / Course')"
+					/>
+					<FormControl
+						v-model="batch.semester"
+						type="select"
+						:label="__('Semester / Year')"
+						:options="semesterOptions"
+					/>
+					<FormControl
 						v-model="batch.medium"
 						type="select"
 						:options="mediumOptions"
@@ -149,6 +164,9 @@ type Batch = {
 	category: string | null
 	seat_count: number
 	medium: string | null
+	academic_year: string
+	department: string
+	semester: string
 }
 
 const batch = ref<Batch>({
@@ -164,7 +182,28 @@ const batch = ref<Batch>({
 	category: null,
 	seat_count: 0,
 	medium: null,
+	academic_year: '',
+	department: '',
+	semester: '',
 })
+
+const semesterOptions = [
+	{ label: '', value: '' },
+	...[
+		'Semester 1',
+		'Semester 2',
+		'Semester 3',
+		'Semester 4',
+		'Semester 5',
+		'Semester 6',
+		'Semester 7',
+		'Semester 8',
+		'Year 1',
+		'Year 2',
+		'Year 3',
+		'Year 4',
+	].map((item) => ({ label: __(item), value: item })),
+]
 
 const createCategory = (name: string, done: () => void) => {
 	createLMSCategory(name).then((categoryName: string) => {

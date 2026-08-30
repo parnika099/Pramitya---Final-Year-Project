@@ -22,6 +22,26 @@
 								class="w-full"
 							/>
 							<FormControl
+								v-model="batchDetail.doc.batch_code"
+								:label="__('Batch ID')"
+								:disabled="true"
+							/>
+							<FormControl
+								v-model="batchDetail.doc.academic_year"
+								:label="__('Academic Year')"
+								:placeholder="__('Example: 2026-27')"
+							/>
+							<FormControl
+								v-model="batchDetail.doc.department"
+								:label="__('Department / Course')"
+							/>
+							<FormControl
+								v-model="batchDetail.doc.semester"
+								:label="__('Semester / Year')"
+								type="select"
+								:options="semesterOptions"
+							/>
+							<FormControl
 								v-model="batchDetail.doc.start_date"
 								:label="__('Batch Start Date')"
 								type="date"
@@ -403,6 +423,24 @@ const keyboardShortcut = (e) => {
 onBeforeUnmount(() => {
 	window.removeEventListener('keydown', keyboardShortcut)
 })
+
+const semesterOptions = [
+	{ label: '', value: '' },
+	...[
+		'Semester 1',
+		'Semester 2',
+		'Semester 3',
+		'Semester 4',
+		'Semester 5',
+		'Semester 6',
+		'Semester 7',
+		'Semester 8',
+		'Year 1',
+		'Year 2',
+		'Year 3',
+		'Year 4',
+	].map((item) => ({ label: __(item), value: item })),
+]
 
 const batchDetail = createDocumentResource({
 	doctype: 'LMS Batch',

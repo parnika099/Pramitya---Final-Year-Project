@@ -33,7 +33,7 @@
 					<div class="flex items-center space-x-2">
 						<FormControl
 							v-model="searchFilter"
-							:placeholder="__('Search by name')"
+							:placeholder="__('Search by name or Student ID')"
 							type="text"
 						/>
 						<Button @click="showEnrollmentModal = true">
@@ -94,7 +94,10 @@
 												class="!mx-0 !mr-4"
 											/> -->
 										</template>
-										<div v-if="column.key == 'creation'">
+										<div v-if="column.key == 'student_id'">
+											{{ row.student_id || '—' }}
+										</div>
+										<div v-else-if="column.key == 'creation'">
 											{{ dayjs(row[column.key]).format('DD MMM YYYY') }}
 										</div>
 										<div
@@ -228,6 +231,7 @@ const students = createListResource({
 		'name',
 		'member',
 		'member_name',
+		'student_id',
 		'member_username',
 		'member_image',
 		'creation',
@@ -245,11 +249,18 @@ watch(searchFilter, () => {
 		batch: props.batch?.data?.name,
 	}
 
+	const update: Record<string, any> = { filters }
 	if (searchFilter.value) {
-		filters.member_name = ['like', `%${searchFilter.value}%`]
+		const term = `%${searchFilter.value}%`
+		update.orFilters = [
+			['member_name', 'like', term],
+			['student_id', 'like', term],
+		]
+	} else {
+		update.orFilters = []
 	}
 
-	students.update({ filters })
+	students.update(update)
 	students.reload()
 })
 
@@ -258,7 +269,12 @@ const studentColumns = computed(() => {
 		{
 			label: __('Name'),
 			key: 'member_name',
-			width: '40%',
+			width: '30%',
+		},
+		{
+			label: __('Student ID'),
+			key: 'student_id',
+			width: '20%',
 		},
 		{
 			label: __('Enrolled On'),

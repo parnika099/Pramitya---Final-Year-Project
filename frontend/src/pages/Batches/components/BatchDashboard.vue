@@ -13,6 +13,14 @@
 							)
 						}}
 					</div>
+					<div class="flex flex-wrap gap-2 text-sm text-ink-gray-6">
+						<span v-if="user.data?.student_id">
+							{{ __('Student ID') }} {{ user.data.student_id }}
+						</span>
+						<span v-if="batch.data?.batch_code">
+							{{ __('Batch ID') }} {{ batch.data.batch_code }}
+						</span>
+					</div>
 				</div>
 				<div class="space-y-10">
 					<div>
