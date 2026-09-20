@@ -4,15 +4,19 @@
 			{{ __('Settings') }}
 		</h2>
 		<div
-			v-if="readOnlyMode"
+			v-if="readOnlyMode || superAdminLocked"
 			class="flex items-center space-x-2 text-sm text-ink-gray-7 bg-surface-gray-1 px-3 py-2 rounded-md w-full text-center"
 		>
 			<CircleAlert class="size-4 stroke-1.5" />
 			<span>
-				{{ __('You cannot change the roles in read-only mode.') }}
+				{{
+					superAdminLocked
+						? __('Only a Super Admin can change this account.')
+						: __('You cannot change the roles in read-only mode.')
+				}}
 			</span>
 		</div>
-		<div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+		<div v-else-if="!superAdminLocked" class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
 			<Switch
 				size="sm"
 				:label="__('Student')"
@@ -48,7 +52,7 @@
 </template>
 <script setup>
 import { Switch, call, createResource, toast } from 'frappe-ui'
-import { ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { convertToTitleCase } from '@/utils'
 import { CircleAlert } from 'lucide-vue-next'
 
@@ -57,6 +61,10 @@ const course_creator = ref(false)
 const batch_evaluator = ref(false)
 const lms_student = ref(false)
 const readOnlyMode = window.read_only_mode
+const user = inject('$user')
+const superAdminLocked = computed(
+	() => roles.data?.system_manager && !user.data?.is_system_manager
+)
 
 const props = defineProps({
 	profile: {
@@ -102,11 +110,17 @@ const saveRole = async (role) => {
 			: convertToTitleCase(role.split('_').join(' '))
 	const value = eval(role).value
 
-	await call('lms.lms.api.save_role', {
-		user: props.profile.data?.name,
-		role: roleName,
-		value: value,
-	})
-	toast.success(__('Role updated successfully'))
+	if (superAdminLocked.value) return
+	try {
+		await call('lms.lms.api.save_role', {
+			user: props.profile.data?.name,
+			role: roleName,
+			value: value,
+		})
+		toast.success(__('Role updated successfully'))
+	} catch (error) {
+		eval(role).value = !value
+		toast.error(error?.messages?.[0] || __('Could not update the role'))
+	}
 }
 </script>

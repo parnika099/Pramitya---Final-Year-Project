@@ -13,12 +13,29 @@
 				class="flex flex-col bg-surface-white border rounded-lg p-3 cursor-pointer hover:bg-surface-menu-bar"
 				@click="openCertificate(certificate)"
 			>
-				<div class="font-medium leading-5 mb-2 text-ink-gray-9">
-					{{ certificate.course_title || certificate.batch_title }}
-				</div>
-				<div class="text-sm text-ink-gray-7 font-medium mt-auto">
-					<span> {{ __('Issued on') }}: </span>
-					{{ dayjs(certificate.issue_date).format('DD MMM YYYY') }}
+				<div class="flex gap-3">
+					<div class="min-w-0 flex-1">
+						<div class="font-medium leading-5 mb-2 text-ink-gray-9">
+							{{ certificate.course_title || certificate.batch_title }}
+						</div>
+						<div class="text-sm text-ink-gray-7 font-medium mt-auto">
+							<span> {{ __('Issued on') }}: </span>
+							{{ dayjs(certificate.issue_date).format('DD MMM YYYY') }}
+						</div>
+						<button
+							v-if="proofs.data?.[certificate.name]"
+							class="mt-3 text-sm font-semibold text-[#303b78] hover:underline"
+							@click.stop="openVerification(certificate.name)"
+						>
+							{{ __('Verify credential') }}
+						</button>
+					</div>
+					<img
+						v-if="qrCodes[certificate.name]"
+						:src="qrCodes[certificate.name]"
+						:alt="__('Credential verification QR code')"
+						class="size-20 shrink-0 rounded border bg-white p-1"
+					/>
 				</div>
 			</div>
 		</div>
@@ -28,10 +45,14 @@
 	</div>
 </template>
 <script setup>
-import { createListResource } from 'frappe-ui'
-import { inject, onMounted } from 'vue'
+import { createListResource, createResource } from 'frappe-ui'
+import { inject, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import QRCode from 'qrcode'
 
 const dayjs = inject('$dayjs')
+const router = useRouter()
+const qrCodes = ref({})
 const props = defineProps({
 	profile: {
 		type: Object,
@@ -42,7 +63,25 @@ const props = defineProps({
 onMounted(() => {
 	if (props.profile.data?.name) {
 		certificates.reload()
+		proofs.fetch()
 	}
+})
+
+const proofs = createResource({
+	url: 'lms.lms.credential.get_certificate_proofs',
+	makeParams() {
+		return { member: props.profile.data?.name }
+	},
+	onSuccess: async (data) => {
+		for (const [certificate, token] of Object.entries(data || {})) {
+			const url = `${window.location.origin}/lms/verify/${token}`
+			qrCodes.value[certificate] = await QRCode.toDataURL(url, {
+				width: 140,
+				margin: 1,
+				color: { dark: '#303B78', light: '#FFFFFF' },
+			})
+		}
+	},
 })
 
 const certificates = createListResource({
@@ -60,5 +99,10 @@ const openCertificate = (certificate) => {
 			certificate.name
 		}&format=${encodeURIComponent(certificate.template)}`
 	)
+}
+
+const openVerification = (certificate) => {
+	const token = proofs.data?.[certificate]
+	if (token) router.push({ name: 'CredentialVerify', params: { token } })
 }
 </script>

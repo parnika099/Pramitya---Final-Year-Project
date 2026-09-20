@@ -95,6 +95,23 @@
 					<div class="text-base text-ink-gray-7 mt-1">
 						{{ profile.data.headline }}
 					</div>
+					<div
+						v-if="profile.data.academic?.student_id"
+						class="mt-2 flex flex-wrap gap-2 text-sm text-ink-gray-7"
+					>
+						<span class="rounded-md border px-2 py-1">
+							{{ __('Student ID') }} {{ profile.data.academic.student_id }}
+						</span>
+						<span v-if="profile.data.academic.batch_code" class="rounded-md border px-2 py-1">
+							{{ __('Batch ID') }} {{ profile.data.academic.batch_code }}
+						</span>
+						<span v-if="profile.data.academic.fee_status" class="rounded-md border px-2 py-1">
+							{{ __('Fees') }} {{ profile.data.academic.fee_status }}
+							<span v-if="profile.data.academic.pending_amount">
+								· {{ profile.data.academic.pending_amount }}
+							</span>
+						</span>
+					</div>
 					<div class="flex items-center space-x-4 mt-2">
 						<Twitter
 							v-if="profile.data.twitter"
