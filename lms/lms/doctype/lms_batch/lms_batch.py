@@ -27,6 +27,7 @@ from lms.lms.utils import (
 
 class LMSBatch(Document):
 	def validate(self):
+		self.assign_batch_identity()
 		self.validate_seats_left()
 		self.validate_batch_end_date()
 		self.validate_batch_time()
@@ -41,6 +42,33 @@ class LMSBatch(Document):
 	def on_update(self):
 		if self.has_value_changed("published") and self.published:
 			frappe.enqueue(send_notification_for_published_batch, batch=self)
+		from lms.lms.academic import audit_batch_change
+
+		audit_batch_change(self)
+
+	def assign_batch_identity(self):
+		from lms.lms.academic import allocate_batch_code
+		from lms.lms.academic_rules import AcademicRuleError, clean_label, series_year, validate_semester
+
+		if not self.academic_year and self.start_date:
+			self.academic_year = series_year(None, self.start_date)
+		try:
+			if self.academic_year:
+				self.academic_year = clean_label(self.academic_year, "Academic year", max_length=20)
+			if self.department:
+				self.department = clean_label(self.department, "Department", max_length=140)
+			if self.semester:
+				self.semester = validate_semester(self.semester)
+		except AcademicRuleError as exc:
+			frappe.throw(str(exc))
+
+		previous = None
+		if not self.is_new() and self.name and frappe.db.exists("LMS Batch", self.name):
+			previous = frappe.db.get_value("LMS Batch", self.name, "batch_code")
+		if previous:
+			self.batch_code = previous
+		elif not self.batch_code:
+			self.batch_code = allocate_batch_code(self.academic_year, self.start_date)
 
 	def autoname(self):
 		if not self.name:
@@ -66,7 +94,7 @@ class LMSBatch(Document):
 		if self.paid_batch:
 			installed_apps = frappe.get_installed_apps()
 			if "payments" not in installed_apps:
-				documentation_link = "https://docs.frappe.io/learning/setting-up-payment-gateway"
+				documentation_link = "/lms"
 				frappe.throw(
 					_(
 						"Please install the Payments App to create a paid batch. Refer to the documentation for more details. {0}"

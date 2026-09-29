@@ -10,6 +10,10 @@ from frappe.model.document import Document
 
 
 class LMSBatchEnrollment(Document):
+	def before_insert(self):
+		if frappe.get_meta(self.doctype).has_field("active"):
+			self.active = 1
+
 	def after_insert(self):
 		send_confirmation_email(self)
 		self.add_member_to_live_class()
@@ -21,6 +25,17 @@ class LMSBatchEnrollment(Document):
 		self.validate_self_enrollment()
 		self.validate_seat_availability()
 		self.validate_course_enrollment()
+		self.copy_academic_identity()
+		self.keep_one_active_batch()
+
+	def on_update(self):
+		self.sync_active_batch()
+
+	def on_trash(self):
+		if cint_active(self) and frappe.get_meta("User").has_field("active_batch"):
+			current = frappe.db.get_value("User", self.member, "active_batch")
+			if current == self.batch:
+				frappe.db.set_value("User", self.member, "active_batch", None, update_modified=False)
 
 	def validate_owner(self):
 		if self.owner == self.member:
@@ -87,6 +102,57 @@ class LMSBatchEnrollment(Document):
 				enrollment.enrollment_from_batch = self.batch
 				enrollment.save()
 
+	def copy_academic_identity(self):
+		if frappe.get_meta("User").has_field("student_id"):
+			self.student_id = frappe.db.get_value("User", self.member, "student_id")
+		if frappe.get_meta("LMS Batch").has_field("batch_code"):
+			self.batch_code = frappe.db.get_value("LMS Batch", self.batch, "batch_code")
+
+	def keep_one_active_batch(self):
+		if not cint_active(self):
+			return
+		from lms.lms.academic import log_audit
+		from lms.lms.academic_rules import other_active_enrollments
+
+		active_names = frappe.get_all(
+			"LMS Batch Enrollment",
+			filters={"member": self.member, "active": 1},
+			pluck="name",
+		)
+		for name in other_active_enrollments(active_names, self.name, True):
+			frappe.db.set_value("LMS Batch Enrollment", name, "active", 0, update_modified=False)
+			log_audit(
+				"Batch assignment changed",
+				"LMS Batch Enrollment",
+				name,
+				_("Previous active batch was closed for this student"),
+				{"member": self.member, "active_batch": self.batch},
+			)
+
+	def sync_active_batch(self):
+		if not frappe.get_meta("User").has_field("active_batch"):
+			return
+		from lms.lms.academic import log_audit
+
+		previous = self.get_doc_before_save()
+		if cint_active(self):
+			frappe.db.set_value("User", self.member, "active_batch", self.batch, update_modified=False)
+			if not previous or not cint_active(previous) or previous.batch != self.batch:
+				log_audit(
+					"Student assigned to batch",
+					"LMS Batch Enrollment",
+					self.name,
+					_("Student assigned to batch {0}").format(self.batch_code or self.batch),
+					{"member": self.member, "student_id": self.student_id, "batch": self.batch},
+				)
+		elif frappe.db.get_value("User", self.member, "active_batch") == self.batch:
+			replacement = frappe.db.get_value(
+				"LMS Batch Enrollment",
+				{"member": self.member, "active": 1, "name": ["!=", self.name]},
+				"batch",
+			)
+			frappe.db.set_value("User", self.member, "active_batch", replacement, update_modified=False)
+
 	def add_member_to_live_class(self):
 		live_classes = frappe.get_all("LMS Live Class", {"batch_name": self.batch}, ["name", "event"])
 
@@ -127,6 +193,12 @@ def send_confirmation_email(doc: Document):
 		if not doc.confirmation_email_sent and (outgoing_email_account or frappe.conf.get("mail_login")):
 			send_mail(doc)
 			frappe.db.set_value(doc.doctype, doc.name, "confirmation_email_sent", 1)
+
+
+def cint_active(doc) -> int:
+	from frappe.utils import cint
+
+	return cint(getattr(doc, "active", 0))
 
 
 def send_mail(doc):

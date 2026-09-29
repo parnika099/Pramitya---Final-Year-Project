@@ -11,6 +11,10 @@
   "section_break_earo",
   "published",
   "title",
+  "batch_code",
+  "academic_year",
+  "department",
+  "semester",
   "start_date",
   "end_date",
   "column_break_4",
@@ -78,6 +82,38 @@
    "in_list_view": 1,
    "label": "Title",
    "reqd": 1
+  },
+  {
+   "fieldname": "batch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Batch ID",
+   "no_copy": 1,
+   "read_only": 1,
+   "unique": 1,
+   "description": "Permanent batch identifier. Assigned once and never changed."
+  },
+  {
+   "fieldname": "academic_year",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Academic Year",
+   "description": "Example: 2026-27"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Department / Course"
+  },
+  {
+   "fieldname": "semester",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Semester / Year",
+   "options": "\nSemester 1\nSemester 2\nSemester 3\nSemester 4\nSemester 5\nSemester 6\nSemester 7\nSemester 8\nYear 1\nYear 2\nYear 3\nYear 4"
   },
   {
    "fieldname": "end_date",

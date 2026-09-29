@@ -915,6 +915,7 @@ def get_course_fields():
 		"lessons",
 		"enrollments",
 		"rating",
+		"enable_ai_viva",
 	]
 
 
@@ -951,6 +952,10 @@ def get_course_details(course: str):
 
 	if course_details.membership and course_details.membership.current_lesson:
 		course_details.current_lesson = get_lesson_index(course_details.membership.current_lesson)
+
+	from lms.lms.ai_viva import augment_course_payload
+
+	augment_course_payload(course_details)
 
 	return course_details
 
@@ -1144,38 +1149,38 @@ def get_batch_details(batch: str):
 	if not (is_batch_published or is_batch_admin or is_student_enrolled):
 		return {}
 
-	batch_details = frappe.db.get_value(
-		"LMS Batch",
-		batch,
-		[
-			"name",
-			"title",
-			"description",
-			"batch_details",
-			"batch_details_raw",
-			"start_date",
-			"end_date",
-			"start_time",
-			"end_time",
-			"seat_count",
-			"published",
-			"amount",
-			"amount_usd",
-			"currency",
-			"paid_batch",
-			"evaluation_end_date",
-			"allow_self_enrollment",
-			"certification",
-			"evaluation",
-			"timezone",
-			"category",
-			"zoom_account",
-			"conferencing_provider",
-			"google_meet_account",
-			"video_link",
-		],
-		as_dict=True,
-	)
+	batch_fields = [
+		"name",
+		"title",
+		"description",
+		"batch_details",
+		"batch_details_raw",
+		"start_date",
+		"end_date",
+		"start_time",
+		"end_time",
+		"seat_count",
+		"published",
+		"amount",
+		"amount_usd",
+		"currency",
+		"paid_batch",
+		"evaluation_end_date",
+		"allow_self_enrollment",
+		"certification",
+		"evaluation",
+		"timezone",
+		"category",
+		"zoom_account",
+		"conferencing_provider",
+		"google_meet_account",
+		"video_link",
+	]
+	batch_meta = frappe.get_meta("LMS Batch")
+	for field in ("batch_code", "academic_year", "department", "semester"):
+		if batch_meta.has_field(field):
+			batch_fields.append(field)
+	batch_details = frappe.db.get_value("LMS Batch", batch, batch_fields, as_dict=True)
 
 	batch_details.instructors = get_instructors("LMS Batch", batch)
 	batch_details.accept_enrollments = batch_details.start_date > getdate()
@@ -1894,6 +1899,7 @@ def get_roles(name: str) -> dict:
 		"course_creator": has_course_instructor_role(name),
 		"batch_evaluator": has_evaluator_role(name),
 		"lms_student": has_student_role(name),
+		"system_manager": "System Manager" in frappe.get_roles(name),
 	}
 
 
@@ -2169,26 +2175,44 @@ def get_batches(filters: dict = None, start: int = 0, order_by: str = "start_dat
 		filters.update({"name": ["in", enrolled_batches]})
 		del filters["enrolled"]
 
+	batch_fields = [
+		"name",
+		"title",
+		"description",
+		"seat_count",
+		"paid_batch",
+		"amount",
+		"amount_usd",
+		"currency",
+		"start_date",
+		"end_date",
+		"start_time",
+		"end_time",
+		"timezone",
+		"published",
+		"category",
+	]
+	batch_meta = frappe.get_meta("LMS Batch")
+	for field in ("batch_code", "academic_year", "department", "semester"):
+		if batch_meta.has_field(field):
+			batch_fields.append(field)
+	or_filters = None
+	title_filter = filters.get("title")
+	if (
+		isinstance(title_filter, (list, tuple))
+		and len(title_filter) >= 2
+		and batch_meta.has_field("batch_code")
+	):
+		filters.pop("title")
+		or_filters = [
+			["title", title_filter[0], title_filter[1]],
+			["batch_code", title_filter[0], title_filter[1]],
+		]
 	batches = frappe.get_all(
 		"LMS Batch",
 		filters=filters,
-		fields=[
-			"name",
-			"title",
-			"description",
-			"seat_count",
-			"paid_batch",
-			"amount",
-			"amount_usd",
-			"currency",
-			"start_date",
-			"end_date",
-			"start_time",
-			"end_time",
-			"timezone",
-			"published",
-			"category",
-		],
+		or_filters=or_filters,
+		fields=batch_fields,
 		order_by=order_by,
 		start=start,
 		page_length=20,
@@ -2397,4 +2421,8 @@ def get_field_meta(doctype, fieldnames):
 
 def is_demo_course(course: str) -> bool:
 	title = frappe.db.get_value("LMS Course", course, "title")
-	return title == "A guide to Frappe Learning"
+	return title in {
+		"Getting Started with Pramitya",
+		"Web Development Foundations",
+		"Data Literacy Basics",
+	}

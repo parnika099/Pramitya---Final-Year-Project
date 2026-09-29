@@ -21,6 +21,32 @@ def validate_username_duplicates(doc, method):
 
 def after_insert(doc, method):
 	doc.add_roles("LMS Student")
+	from lms.lms.academic import assign_student_id_if_missing
+
+	assign_student_id_if_missing(doc.name)
+
+
+def validate_student_identity(doc, method):
+	meta = frappe.get_meta("User")
+	if meta.has_field("student_id"):
+		previous = None
+		if not doc.is_new() and doc.name and frappe.db.exists("User", doc.name):
+			previous = frappe.db.get_value("User", doc.name, "student_id")
+		if previous:
+			doc.student_id = previous
+		elif _doc_has_student_role(doc):
+			from lms.lms.academic import allocate_student_id
+
+			doc.student_id = allocate_student_id()
+	if meta.has_field("active_batch") and not doc.is_new() and doc.name and frappe.db.exists("User", doc.name):
+		doc.active_batch = frappe.db.get_value("User", doc.name, "active_batch")
+
+
+def _doc_has_student_role(doc) -> bool:
+	roles = [row.role for row in (doc.roles or [])]
+	if "LMS Student" in roles:
+		return doc.name not in {"Guest", "Administrator"}
+	return False
 
 
 @frappe.whitelist(allow_guest=True)  # nosemgrep: frappe-semgrep-rules.rules.security.guest-whitelisted-method
