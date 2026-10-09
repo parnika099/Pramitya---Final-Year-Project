@@ -1,5 +1,6 @@
 <template>
 	<div class="w-full px-5 pt-5 pb-10">
+		<UnnatiWelcome />
 		<div class="space-y-2">
 			<div class="flex items-center justify-between">
 				<div class="text-xl font-bold text-ink-gray-9">
@@ -21,6 +22,28 @@
 
 			<div class="text-lg text-ink-gray-6 leading-6">
 				{{ subtitle }}
+			</div>
+			<div
+				v-if="academic.data?.student_id"
+				class="flex flex-wrap gap-2 pt-2 text-sm text-ink-gray-7"
+			>
+				<span class="rounded-md border bg-surface-white px-2 py-1">
+					{{ __('Student ID') }} {{ academic.data.student_id }}
+				</span>
+				<span v-if="academic.data.batch_code" class="rounded-md border bg-surface-white px-2 py-1">
+					{{ __('Batch') }} {{ academic.data.batch_code }}
+					<span v-if="academic.data.department"> · {{ academic.data.department }}</span>
+				</span>
+				<router-link
+					v-if="academic.data.fee_status"
+					:to="{ name: 'Fees' }"
+					class="rounded-md border bg-surface-white px-2 py-1"
+				>
+					{{ __('Fees') }} {{ academic.data.fee_status }}
+					<span v-if="academic.data.pending_amount">
+						· {{ academic.data.pending_amount }}
+					</span>
+				</router-link>
 			</div>
 		</div>
 
@@ -44,6 +67,7 @@ import { useRouter } from 'vue-router'
 import StudentHome from '@/pages/Home/StudentHome.vue'
 import AdminHome from '@/pages/Home/AdminHome.vue'
 import Streak from '@/pages/Home/Streak.vue'
+import UnnatiWelcome from '@/components/UnnatiWelcome.vue'
 
 const user = inject<any>('$user')
 const { brand } = sessionStore()
@@ -88,7 +112,7 @@ const identifyUserPersona = async () => {
 		let courseCount = await call('frappe.client.get_count', {
 			doctype: 'LMS Course',
 			filters: {
-				title: ['not like', '%A guide to Frappe Learning%'],
+				title: ['not in', ['Getting Started with Pramitya', 'Web Development Foundations', 'Data Literacy Basics', 'RHCSA / Certified Linux Administrator']],
 			},
 		})
 		if (!courseCount) {
@@ -124,6 +148,11 @@ const adminEvals = createResource({
 
 const streakInfo = createResource({
 	url: 'lms.lms.api.get_streak_info',
+	auto: true,
+})
+
+const academic = createResource({
+	url: 'lms.lms.academic.get_my_academic_card',
 	auto: true,
 })
 
