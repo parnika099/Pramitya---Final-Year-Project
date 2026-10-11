@@ -27,6 +27,7 @@ from frappe.utils import (
 	now,
 )
 from frappe.utils.response import Response
+from frappe.rate_limiter import rate_limit
 from pypika import functions as fn
 
 from lms.lms.course_import_export import export_course_zip, import_course_zip
@@ -52,10 +53,16 @@ def get_user_info():
 	if frappe.session.user == "Guest":
 		return None
 
+	user_fields = ["name", "email", "enabled", "user_image", "full_name", "user_type", "username", "bio", "headline"]
+	user_meta = frappe.get_meta("User")
+	if user_meta.has_field("student_id"):
+		user_fields.append("student_id")
+	if user_meta.has_field("active_batch"):
+		user_fields.append("active_batch")
 	user = frappe.db.get_value(
 		"User",
 		frappe.session.user,
-		["name", "email", "enabled", "user_image", "full_name", "user_type", "username", "bio", "headline"],
+		user_fields,
 		as_dict=1,
 	)
 	user["roles"] = frappe.get_roles(user.name)
@@ -1437,6 +1444,9 @@ def get_certification_details(course: str):
 @frappe.whitelist()
 def save_role(user: str, role: str, value: int):
 	frappe.only_for("Moderator")
+	from lms.lms.academic import assert_role_change
+
+	assert_role_change(user, role)
 	if role not in LMS_ROLES:
 		frappe.throw(_("You do not have permission to modify this role."), frappe.PermissionError)
 
@@ -1454,6 +1464,7 @@ def save_role(user: str, role: str, value: int):
 	else:
 		frappe.db.delete("Has Role", {"parent": user, "role": role})
 	frappe.clear_cache(user=user)
+	_record_role_change(user, role, value)
 	return True
 
 
@@ -1476,7 +1487,22 @@ def save_evaluator_role(user: str, value: int):
 		if frappe.db.exists("Course Evaluator", {"evaluator": user}):
 			frappe.db.delete("Course Evaluator", {"evaluator": user})
 	frappe.clear_cache(user=user)
+	_record_role_change(user, "Batch Evaluator", value)
 	return True
+
+
+def _record_role_change(user: str, role: str, value: int):
+	from lms.lms.academic import assign_student_id_if_missing, log_audit
+
+	if role == "LMS Student" and cint(value):
+		assign_student_id_if_missing(user)
+	log_audit(
+		"Role granted" if cint(value) else "Role removed",
+		"User",
+		user,
+		_("{0} {1}").format(role, _("granted") if cint(value) else _("removed")),
+		{"role": role, "enabled": cint(value)},
+	)
 
 
 @frappe.whitelist()
@@ -1746,13 +1772,13 @@ def get_progress_distribution(progressList: list):
 
 @frappe.whitelist(allow_guest=True)
 def get_pwa_manifest():
-	title = frappe.db.get_single_value("Website Settings", "app_name") or "Frappe Learning"
+	title = frappe.db.get_single_value("Website Settings", "app_name") or "Unnati Development LMS"
 	banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
 	manifest = {
 		"name": title,
 		"short_name": title,
-		"description": "Easy to use, 100% open source Learning Management System",
+		"description": "Unnati Development Institute learning portal for Linux, cloud, DevOps and certification readiness",
 		"start_url": get_lms_route(),
 		"icons": [
 			{
@@ -1796,6 +1822,9 @@ def get_profile_details(username: str):
 			_("User does not have permission to access this user's profile details."), frappe.PermissionError
 		)
 	details.roles = roles
+	from lms.lms.academic import academic_profile
+
+	details.academic = academic_profile(details.name)
 	return details
 
 
@@ -2306,16 +2335,32 @@ def get_badges(member: str):
 @frappe.whitelist()
 def clear_demo_data():
 	frappe.only_for("Moderator")
-	quiz_title = "Do you know Frappe Learning?"
-	if frappe.db.exists("LMS Quiz", {"title": quiz_title}):
-		frappe.db.delete("LMS Quiz", {"title": quiz_title})
+	demo_quiz_titles = [
+		"Do you know Pramitya?",
+		"Web Development Foundations Check",
+		"Data Literacy Basics Check",
+	]
+	for quiz_title in demo_quiz_titles:
+		if frappe.db.exists("LMS Quiz", {"title": quiz_title}):
+			frappe.db.delete("LMS Quiz", {"title": quiz_title})
 
-	demo_course = frappe.get_all("LMS Course", {"title": "A guide to Frappe Learning"}, pluck="name")
+	demo_course_titles = [
+		"Getting Started with Pramitya",
+		"Web Development Foundations",
+		"Data Literacy Basics",
+	]
+	demo_course = frappe.get_all("LMS Course", {"title": ["in", demo_course_titles]}, pluck="name")
 
-	if len(demo_course):
-		delete_course(demo_course[0])
+	for course in demo_course:
+		delete_course(course)
 
-	users = ["ash@ipp.com", "john.doe@example.com", "jane.smith@example.com", "jannat@example.com"]
+	users = [
+		"ash@ipp.com",
+		"john.doe@example.com",
+		"jane.smith@example.com",
+		"jannat@example.com",
+		"learner@pramitya.test",
+	]
 	for user in users:
 		if frappe.db.exists("User", user):
 			frappe.delete_doc("User", user, ignore_permissions=True)
@@ -2381,3 +2426,35 @@ def export_course_as_zip(course_name: str):
 def import_course_from_zip(zip_file_path: str):
 	frappe.only_for(["Moderator", "Course Creator"])
 	return import_course_zip(zip_file_path)
+
+
+@frappe.whitelist(allow_guest=True)
+def ai_viva_eligibility(course: str):
+	if frappe.session.user == "Guest":
+		return {
+			"eligible": False,
+			"reason": "login_required",
+			"message": _("Login to take the AI Viva."),
+			"max_attempts": None,
+			"attempts_used": None,
+			"pass_score": None,
+			"websocket_url": None,
+		}
+
+	from lms.lms.ai_viva import get_eligibility
+
+	return get_eligibility(course)
+
+
+@frappe.whitelist()
+def ai_viva_get_access(course: str, ttl_seconds: int = 120):
+	from lms.lms.ai_viva import get_access_bundle
+
+	return get_access_bundle(course, ttl_seconds=int(ttl_seconds or 120))
+
+
+@frappe.whitelist()
+def ai_viva_submit(session: str, transcript):
+	from lms.lms.ai_viva import submit_result
+
+	return submit_result(session, transcript)

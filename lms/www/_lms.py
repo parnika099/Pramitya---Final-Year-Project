@@ -18,7 +18,7 @@ def get_context():
 
 	app_path = frappe.form_dict.get("app_path")
 	favicon = frappe.db.get_single_value("Website Settings", "favicon") or "/assets/lms/frontend/favicon.png"
-	title = frappe.db.get_single_value("Website Settings", "app_name") or "Frappe Learning"
+	title = frappe.db.get_single_value("Website Settings", "app_name") or "Unnati Development LMS"
 
 	context.meta = get_meta(app_path, title, favicon)
 	context.title = title
@@ -29,6 +29,9 @@ def get_context():
 
 
 def get_boot():
+	socketio_port = frappe.conf.get("socketio_port")
+	if socketio_port is None:
+		socketio_port = 9000
 	return frappe._dict(
 		{
 			"frappe_version": frappe.__version__,
@@ -36,6 +39,7 @@ def get_boot():
 			"csrf_token": frappe.sessions.get_csrf_token(),
 			"site_name": frappe.local.site,
 			"lms_path": get_lms_path(),
+			"socketio_port": socketio_port,
 		}
 	)
 

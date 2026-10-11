@@ -22,7 +22,7 @@ frappe.ui.form.on("LMS Settings", {
 					Please install the
 					<a target="_blank" style="text-decoration: underline; color: var(--alert-text-warning); background: var(--alert-bg-warning);" href="https://frappecloud.com/marketplace/apps/payments">Payments app</a>
 					 to enable payment gateway. Refer to the
-					 <a target="_blank" style="text-decoration: underline; color: var(--alert-text-warning); background: var(--alert-bg-warning);" href="https://docs.frappe.io/learning/setting-up-payment-gateway">Documentation</a>
+					 <a target="_blank" style="text-decoration: underline; color: var(--alert-text-warning); background: var(--alert-bg-warning);" href="/lms">Documentation</a>
 					 for more information.
 				</div>
 			`);

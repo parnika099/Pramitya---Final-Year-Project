@@ -3,14 +3,14 @@ import frappe
 from . import __version__ as app_version
 
 app_name = "frappe_lms"
-app_title = "Learning"
-app_publisher = "Frappe"
-app_description = "Open Source Learning Management System built with Frappe Framework"
+app_title = "Unnati Development LMS"
+app_publisher = "Unnati Development Institute"
+app_description = "Linux, cloud and DevOps learning management system with practical assessments and AI viva"
 app_icon_url = "/assets/lms/images/lms-logo.png"
-app_icon_title = "Learning"
+app_icon_title = "Unnati LMS"
 app_icon_route = "/lms"
 app_color = "grey"
-app_email = "jannat@frappe.io"
+app_email = "training@unnatidevelopment.in"
 app_license = "AGPL"
 required_apps = ["frappe/payments"]
 
@@ -77,6 +77,7 @@ before_uninstall = "lms.install.before_uninstall"
 setup_wizard_complete = "lms.demo.demo_data.create_demo_data"
 after_migrate = [
 	"lms.sqlite.build_index_in_background",
+	"lms.lms.academic.ensure_academic_setup",
 ]
 
 # Desk Notifications
@@ -91,6 +92,9 @@ after_migrate = [
 
 permission_query_conditions = {
 	"LMS Certificate": "lms.lms.doctype.lms_certificate.lms_certificate.get_permission_query_conditions",
+	"LMS Fee Account": "lms.lms.academic.fee_permission_query",
+	"LMS Fee Transaction": "lms.lms.academic.fee_transaction_permission_query",
+	"LMS Audit Log": "lms.lms.academic.audit_permission_query",
 }
 
 has_permission = {
@@ -98,6 +102,9 @@ has_permission = {
 	"LMS Batch": "lms.lms.doctype.lms_batch.lms_batch.has_permission",
 	"LMS Program": "lms.lms.doctype.lms_program.lms_program.has_permission",
 	"LMS Certificate": "lms.lms.doctype.lms_certificate.lms_certificate.has_permission",
+	"LMS Fee Account": "lms.lms.academic.has_fee_permission",
+	"LMS Fee Transaction": "lms.lms.academic.has_fee_permission",
+	"LMS Audit Log": "lms.lms.academic.has_audit_permission",
 }
 
 # DocType Class
@@ -123,8 +130,14 @@ doc_events = {
 		"validate": "lms.lms.utils.validate_discussion_reply",
 	},
 	"Notification Log": {"on_change": "lms.lms.utils.publish_notifications"},
+	"LMS Certificate": {
+		"after_insert": "lms.lms.credential.anchor_certificate_after_insert",
+	},
 	"User": {
-		"validate": "lms.lms.user.validate_username_duplicates",
+		"validate": [
+			"lms.lms.user.validate_username_duplicates",
+			"lms.lms.user.validate_student_identity",
+		],
 		"after_insert": "lms.lms.user.after_insert",
 	},
 }
@@ -144,6 +157,7 @@ scheduler_events = {
 	"daily": [
 		"lms.job.doctype.job_opportunity.job_opportunity.update_job_openings",
 		"lms.lms.doctype.lms_payment.lms_payment.send_payment_reminder",
+		"lms.lms.academic.refresh_overdue_fee_status",
 		"lms.lms.doctype.lms_batch.lms_batch.send_batch_start_reminder",
 		"lms.lms.doctype.lms_live_class.lms_live_class.send_live_class_reminder",
 		"lms.lms.doctype.lms_course.lms_course.send_notification_for_published_courses",

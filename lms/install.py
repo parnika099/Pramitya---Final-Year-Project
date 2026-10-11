@@ -146,6 +146,8 @@ def delete_custom_fields():
 		"hide_private",
 		"work_experience_details",
 		"profile_complete",
+		"student_id",
+		"active_batch",
 	]
 
 	for field in fields:
