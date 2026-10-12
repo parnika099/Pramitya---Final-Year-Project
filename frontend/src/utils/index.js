@@ -459,6 +459,12 @@ const getSidebarItems = (forMobile = false) => {
 			hideLabel: true,
 			items: [
 				{
+					label: 'Institute',
+					icon: 'Building2',
+					to: 'Institute',
+					activeFor: ['Institute'],
+				},
+				{
 					label: 'Courses',
 					icon: 'BookOpen',
 					to: 'Courses',
@@ -486,6 +492,50 @@ const getSidebarItems = (forMobile = false) => {
 					activeFor: ['Batches', 'BatchDetail', 'Batch', 'BatchForm'],
 				},
 				{
+					label: 'Students',
+					icon: 'Contact',
+					to: 'Students',
+					activeFor: ['Students'],
+					condition: () => {
+						return (
+							userResource?.data?.is_moderator ||
+							userResource?.data?.is_evaluator ||
+							userResource?.data?.is_instructor ||
+							userResource?.data?.is_system_manager
+						)
+					},
+				},
+				{
+					label: 'Fees',
+					icon: 'Wallet',
+					to: 'Fees',
+					activeFor: ['Fees'],
+					condition: () => {
+						return !!userResource?.data
+					},
+				},
+				{
+					label: 'Reports',
+					icon: 'FileBarChart',
+					to: 'Reports',
+					activeFor: ['Reports'],
+					condition: () => {
+						return !!userResource?.data
+					},
+				},
+				{
+					label: 'Access',
+					icon: 'Shield',
+					to: 'AccessControl',
+					activeFor: ['AccessControl'],
+					condition: () => {
+						return (
+							userResource?.data?.is_moderator ||
+							userResource?.data?.is_system_manager
+						)
+					},
+				},
+				{
 					label: 'Certifications',
 					icon: 'GraduationCap',
 					to: 'CertifiedParticipants',
@@ -505,6 +555,21 @@ const getSidebarItems = (forMobile = false) => {
 					icon: 'TrendingUp',
 					to: 'Statistics',
 					activeFor: ['Statistics'],
+				},
+				{
+					label: 'Exam Centre',
+					icon: 'ClipboardCheck',
+					to: 'ExamCenter',
+					activeFor: ['ExamCenter'],
+				},
+				{
+					label: 'Credential Trust',
+					icon: 'ShieldCheck',
+					to: 'CredentialTrust',
+					activeFor: ['CredentialTrust', 'CredentialVerify'],
+					condition: () => {
+						return userResource?.data
+					},
 				},
 				{
 					label: 'Contact Us',

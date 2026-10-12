@@ -16,11 +16,18 @@ const routes = [
 		component: () => import('@/pages/Courses/Courses.vue'),
 	},
 	{
-		path: '/courses/:courseName',
-		name: 'CourseDetail',
-		component: () => import('@/pages/Courses/CourseDetail.vue'),
-		props: true,
+		path: '/institute',
+		name: 'Institute',
+		component: () => import('@/pages/Institute.vue'),
+		meta: { allowGuest: true },
 	},
+	{
+		path: '/exam-center',
+		name: 'ExamCenter',
+		component: () => import('@/pages/ExamCenter.vue'),
+		meta: { allowGuest: true },
+	},
+	/* More-specific /courses/:slug/... routes before /courses/:courseName only */
 	{
 		path: '/courses/:courseName/learn/:chapterNumber-:lessonNumber',
 		name: 'Lesson',
@@ -34,9 +41,21 @@ const routes = [
 		props: true,
 	},
 	{
+		path: '/courses/:courseName/ai-viva',
+		name: 'CourseAiViva',
+		component: () => import('@/pages/Courses/CourseAiViva.vue'),
+		props: true,
+	},
+	{
 		path: '/courses/:courseName/learn/:chapterName',
 		name: 'SCORMChapter',
 		component: () => import('@/pages/SCORMChapter.vue'),
+		props: true,
+	},
+	{
+		path: '/courses/:courseName',
+		name: 'CourseDetail',
+		component: () => import('@/pages/Courses/CourseDetail.vue'),
 		props: true,
 	},
 	{
@@ -64,6 +83,38 @@ const routes = [
 		path: '/statistics',
 		name: 'Statistics',
 		component: () => import('@/pages/Statistics.vue'),
+	},
+	{
+		path: '/students',
+		name: 'Students',
+		component: () => import('@/pages/Students.vue'),
+	},
+	{
+		path: '/fees',
+		name: 'Fees',
+		component: () => import('@/pages/Fees.vue'),
+	},
+	{
+		path: '/reports',
+		name: 'Reports',
+		component: () => import('@/pages/Reports.vue'),
+	},
+	{
+		path: '/access',
+		name: 'AccessControl',
+		component: () => import('@/pages/AccessControl.vue'),
+	},
+	{
+		path: '/credential-trust',
+		name: 'CredentialTrust',
+		component: () => import('@/pages/CredentialTrust.vue'),
+	},
+	{
+		path: '/verify/:token',
+		name: 'CredentialVerify',
+		component: () => import('@/pages/CredentialVerify.vue'),
+		props: true,
+		meta: { allowGuest: true, publicShell: true },
 	},
 	{
 		path: '/user/:username',
@@ -246,6 +297,11 @@ const routes = [
 		component: () => import('@/pages/DataImport.vue'),
 		props: true,
 	},
+	{
+		path: '/:pathMatch(.*)*',
+		name: 'LmsNotFound',
+		component: () => import('@/pages/LmsNotFound.vue'),
+	},
 ]
 
 let router = createRouter({
@@ -267,6 +323,7 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	if (!isLoggedIn) {
+		if (to.meta.allowGuest) return next()
 		if (to.name == 'Home') router.push({ name: 'Courses' })
 
 		await settings.promise

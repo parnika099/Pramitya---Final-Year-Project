@@ -11,6 +11,14 @@ import { initSocket } from './socket'
 import { FrappeUI, setConfig, frappeRequest, pageMetaPlugin } from 'frappe-ui'
 import { telemetryPlugin } from 'frappe-ui/frappe'
 
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.getRegistrations?.().then((registrations) => {
+		for (let registration of registrations) {
+			registration.unregister()
+		}
+	})
+}
+
 let pinia = createPinia()
 let app = createApp(App)
 setConfig('resourceFetcher', frappeRequest)
