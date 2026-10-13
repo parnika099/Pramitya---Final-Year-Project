@@ -1,0 +1,67 @@
+name: pramitya
+
+services:
+  mariadb:
+    image: mariadb:10.8
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-123}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+
+  frappe:
+    image: frappe/bench:latest
+    user: root
+    command: bash /workspace/docker/init-prod-pramitya.sh
+    env_file:
+      - .env
+    environment:
+      - SHELL=/bin/bash
+      - SITE_NAME=${SITE_NAME:-pramitya.localhost}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-123}
+      - PRAMITYA_DEMO_PASSWORD=${DEMO_PASSWORD:-}
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY:-}
+      - DEEPGRAM_AGENT_WS_URL=${DEEPGRAM_AGENT_WS_URL:-}
+      - DEEPGRAM_THINK_PROVIDER=${DEEPGRAM_THINK_PROVIDER:-}
+      - DEEPGRAM_THINK_MODEL=${DEEPGRAM_THINK_MODEL:-}
+      - DEEPGRAM_LISTEN_MODEL=${DEEPGRAM_LISTEN_MODEL:-}
+      - DEEPGRAM_SPEAK_MODEL=${DEEPGRAM_SPEAK_MODEL:-}
+    working_dir: /home/frappe
+    volumes:
+      - ..:/workspace
+      - bench-data:/home/frappe/frappe-bench
+    depends_on:
+      - mariadb
+      - redis
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      - SITE_NAME=${SITE_NAME:-pramitya.localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile.pramitya:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - frappe
+    restart: unless-stopped
+
+volumes:
+  mariadb-data:
+  bench-data:
+  caddy-data:
+  caddy-config:

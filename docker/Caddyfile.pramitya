@@ -1,0 +1,6 @@
+{$SITE_NAME} {
+	encode gzip zstd
+
+	reverse_proxy /socket.io/* frappe:9000
+	reverse_proxy frappe:8000
+}
