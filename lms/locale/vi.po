@@ -64,7 +64,7 @@ msgid "<a href=\"https://docs.frappe.io/learning\">Documentation</a>"
 msgstr ""
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:51
-msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Frappe Learning</p>"
+msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Pramitya</p>"
 msgstr ""
 
 #. Header text in the Learning Workspace
@@ -521,7 +521,7 @@ msgid "Are you sure you want to cancel this evaluation? This action cannot be un
 msgstr ""
 
 #: frontend/src/components/Sidebar/UserDropdown.vue:254
-msgid "Are you sure you want to clear the demo data? This would delete the course \"A guide  to Frappe Learning\" along with all its associated data. This action cannot be undone."
+msgid "Are you sure you want to clear the demo data? This would delete the course \"A guide  to Pramitya\" along with all its associated data. This action cannot be undone."
 msgstr ""
 
 #: frontend/src/pages/Programs/ProgramForm.vue:562
@@ -2182,7 +2182,7 @@ msgid "Dear "
 msgstr ""
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:67
-msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nFrappe Learning"
+msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nPramitya"
 msgstr ""
 
 #: frontend/src/pages/QuizForm.vue:125
@@ -3115,7 +3115,7 @@ msgstr ""
 
 #. Label of a Desktop Icon
 #: lms/desktop_icon/frappe_learning.json
-msgid "Frappe Learning"
+msgid "Pramitya"
 msgstr ""
 
 #: lms/lms/widgets/CourseCard.html:114
@@ -3618,7 +3618,7 @@ msgstr ""
 
 #: frontend/src/components/InstallPrompt.vue:4
 #: frontend/src/components/InstallPrompt.vue:32
-msgid "Install Frappe Learning"
+msgid "Install Pramitya"
 msgstr ""
 
 #. Label of the institution_name (Data) field in DocType 'Education Detail'
@@ -5836,7 +5836,7 @@ msgid "Postal Code"
 msgstr "Mã Bưu Chính"
 
 #: frontend/src/components/Sidebar/AppSidebar.vue:205
-msgid "Powered by Frappe Learning"
+msgid "Powered by Pramitya"
 msgstr ""
 
 #. Name of a DocType
@@ -7988,7 +7988,7 @@ msgid "What best describes your role?"
 msgstr ""
 
 #: frontend/src/pages/PersonaForm.vue:21
-msgid "What is your use case for Frappe Learning?"
+msgid "What is your use case for Pramitya?"
 msgstr ""
 
 #: lms/templates/courses_under_review.html:15

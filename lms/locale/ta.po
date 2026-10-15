@@ -64,7 +64,7 @@ msgid "<a href=\"https://docs.frappe.io/learning\">Documentation</a>"
 msgstr ""
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:50
-msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Frappe Learning</p>"
+msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Pramitya</p>"
 msgstr ""
 
 #. Header text in the LMS Workspace
@@ -1995,7 +1995,7 @@ msgid "Dear "
 msgstr ""
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:66
-msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nFrappe Learning"
+msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nPramitya"
 msgstr ""
 
 #. Label of the default_currency (Link) field in DocType 'LMS Settings'
@@ -3264,7 +3264,7 @@ msgstr ""
 
 #: frontend/src/components/InstallPrompt.vue:4
 #: frontend/src/components/InstallPrompt.vue:32
-msgid "Install Frappe Learning"
+msgid "Install Pramitya"
 msgstr ""
 
 #. Label of the institution_name (Data) field in DocType 'Education Detail'
@@ -7307,7 +7307,7 @@ msgid "What does include in preview mean?"
 msgstr ""
 
 #: frontend/src/pages/PersonaForm.vue:21
-msgid "What is your use case for Frappe Learning?"
+msgid "What is your use case for Pramitya?"
 msgstr ""
 
 #: lms/templates/courses_under_review.html:15

@@ -64,8 +64,8 @@ msgid "<a href=\"https://docs.frappe.io/learning\">Documentation</a>"
 msgstr "<a href=\"https://docs.frappe.io/learning\">Documentatie</a>"
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:51
-msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Frappe Learning</p>"
-msgstr "<p>Beste {{ member_name }},</p>\\n\\n<p>U bent ingeschreven op onze aanstaande batch {{ batch_name }}.</p>\\n\\n<p>Bedankt,</p>\\n<p>Frappe Learning</p>"
+msgid "<p>Dear {{ member_name }},</p>\\n\\n<p>You have been enrolled in our upcoming batch {{ batch_name }}.</p>\\n\\n<p>Thanks,</p>\\n<p>Pramitya</p>"
+msgstr "<p>Beste {{ member_name }},</p>\\n\\n<p>U bent ingeschreven op onze aanstaande batch {{ batch_name }}.</p>\\n\\n<p>Bedankt,</p>\\n<p>Pramitya</p>"
 
 #. Header text in the Learning Workspace
 #: lms/lms/workspace/learning/learning.json
@@ -521,7 +521,7 @@ msgid "Are you sure you want to cancel this evaluation? This action cannot be un
 msgstr "Weet u zeker dat u deze evaluatie wilt annuleren? Deze actie kan niet ongedaan worden gemaakt."
 
 #: frontend/src/components/Sidebar/UserDropdown.vue:254
-msgid "Are you sure you want to clear the demo data? This would delete the course \"A guide  to Frappe Learning\" along with all its associated data. This action cannot be undone."
+msgid "Are you sure you want to clear the demo data? This would delete the course \"A guide  to Pramitya\" along with all its associated data. This action cannot be undone."
 msgstr ""
 
 #: frontend/src/pages/Programs/ProgramForm.vue:562
@@ -2182,8 +2182,8 @@ msgid "Dear "
 msgstr "Beste "
 
 #: frontend/src/components/Modals/EmailTemplateModal.vue:67
-msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nFrappe Learning"
-msgstr "Beste {{ member_name }},\\n\\nU bent ingeschreven voor onze aankomende cursus {{ batch_name }}.\\n\\nBedankt,\\nFrappe Learning"
+msgid "Dear {{ member_name }},\\n\\nYou have been enrolled in our upcoming batch {{ batch_name }}.\\n\\nThanks,\\nPramitya"
+msgstr "Beste {{ member_name }},\\n\\nU bent ingeschreven voor onze aankomende cursus {{ batch_name }}.\\n\\nBedankt,\\nPramitya"
 
 #: frontend/src/pages/QuizForm.vue:125
 msgid "Deduct marks for incorrect answers."
@@ -3115,7 +3115,7 @@ msgstr "Formele kleding"
 
 #. Label of a Desktop Icon
 #: lms/desktop_icon/frappe_learning.json
-msgid "Frappe Learning"
+msgid "Pramitya"
 msgstr ""
 
 #: lms/lms/widgets/CourseCard.html:114
@@ -3618,8 +3618,8 @@ msgstr "Installeer"
 
 #: frontend/src/components/InstallPrompt.vue:4
 #: frontend/src/components/InstallPrompt.vue:32
-msgid "Install Frappe Learning"
-msgstr "Installeer Frappe Learning"
+msgid "Install Pramitya"
+msgstr "Installeer Pramitya"
 
 #. Label of the institution_name (Data) field in DocType 'Education Detail'
 #: lms/lms/doctype/education_detail/education_detail.json
@@ -5836,7 +5836,7 @@ msgid "Postal Code"
 msgstr "Postcode"
 
 #: frontend/src/components/Sidebar/AppSidebar.vue:205
-msgid "Powered by Frappe Learning"
+msgid "Powered by Pramitya"
 msgstr ""
 
 #. Name of a DocType
@@ -7989,8 +7989,8 @@ msgid "What best describes your role?"
 msgstr "Wat beschrijft het beste uw rol?"
 
 #: frontend/src/pages/PersonaForm.vue:21
-msgid "What is your use case for Frappe Learning?"
-msgstr "Wat is uw use case voor Frappe Learning?"
+msgid "What is your use case for Pramitya?"
+msgstr "Wat is uw use case voor Pramitya?"
 
 #: lms/templates/courses_under_review.html:15
 msgid "When a course gets submitted for review, it will be listed here."
