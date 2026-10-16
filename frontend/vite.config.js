@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(async ({ mode }) => {
 	const isDev = mode === 'development'
@@ -20,29 +19,12 @@ export default defineConfig(async ({ mode }) => {
 					indexHtmlPath: '../lms/www/_lms.html',
 				},
 			}),
-			vue(),
-			VitePWA({
-				registerType: 'autoUpdate',
-				devOptions: {
-					enabled: false,
+			vue({
+				template: {
+					compilerOptions: {
+						isCustomElement: (tag) => tag.startsWith('deepgram-'),
+					},
 				},
-				workbox: {
-					cleanupOutdatedCaches: true,
-					maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-					globDirectory: '/assets/lms/frontend',
-					globPatterns: ['**/*.{js,ts,css,html,svg}'],
-					runtimeCaching: [
-						{
-							urlPattern: ({ request }) =>
-								request.destination === 'document',
-							handler: 'NetworkFirst',
-							options: {
-								cacheName: 'html-cache',
-							},
-						},
-					],
-				},
-				manifest: false,
 			}),
 		],
 		server: {

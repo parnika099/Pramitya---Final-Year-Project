@@ -7,7 +7,7 @@
     "dev": "vite",
     "serve": "vite preview",
     "build": "vite build --base=/assets/lms/frontend/ && yarn copy-html-entry && yarn copy-colors-json",
-    "copy-html-entry": "cp ../lms/public/frontend/index.html ../lms/www/_lms.html",
+    "copy-html-entry": "mkdir -p ../lms/www && (test -f ../lms/public/frontend/index.html && cp ../lms/public/frontend/index.html ../lms/www/_lms.html || test -f ../lms/www/_lms.html)",
     "copy-colors-json": "cp node_modules/frappe-ui/tailwind/colors.json src/utils/frappe-ui-colors.json"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@codemirror/lang-javascript": "6.2.4",
     "@codemirror/lang-json": "6.0.1",
     "@codemirror/lang-python": "6.2.1",
+    "@deepgram/browser-agent": "0.2.1",
     "@editorjs/checklist": "1.6.0",
     "@editorjs/code": "2.9.0",
     "@editorjs/editorjs": "2.29.0",
@@ -37,6 +38,7 @@
     "markdown-it": "14.0.0",
     "pinia": "2.0.33",
     "plyr": "3.7.8",
+    "qrcode": "1.5.4",
     "socket.io-client": "4.7.2",
     "thememirror": "2.0.1",
     "typescript": "5.7.2",
@@ -49,12 +51,11 @@
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
-     "@vitejs/plugin-vue": "5.0.3",
+    "@vitejs/plugin-vue": "5.0.3",
     "autoprefixer": "10.4.2",
     "postcss": "8.4.5",
     "tailwindcss": "^3.4.15",
     "unplugin-auto-import": "^20.3.0",
-    "vite": "5.0.11",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite": "5.0.11"
   }
 }
