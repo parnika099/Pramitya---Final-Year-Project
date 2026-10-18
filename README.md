@@ -5,7 +5,6 @@
 
 **Open source learning management system with AI viva assessments**
 
-![Tests](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/vandxn/main&style=flat&logo=cypress)
 
 </div>
 
@@ -15,9 +14,9 @@
 </div>
 <br />
 <div align="center">
-	<a href="/lms">Website</a>
+	<a href="https://github.com/parnika099/Pramitya---Final-Year-Project">Repository</a>
 	-
-	<a href="/lms">Documentation</a>
+	<a href="./ATTRIBUTION.md">Attribution</a>
 </div>
 
 ## Pramitya
@@ -115,7 +114,7 @@ You need Docker, docker-compose and git setup on your machine. Refer [Docker doc
 
     docker compose up -d
 
-**Step 3**: The site [http://lms.localhost:8000/lms](http://lms.localhost:8000/lms) should now be available. The default credentials are:
+**Step 3**: The site [http://pramitya.localhost:8000/lms](http://pramitya.localhost:8000/lms) should now be available. The default credentials are:
 - Username: Administrator
 - Password: admin
 
@@ -131,17 +130,10 @@ To setup the repository locally follow the steps mentioned below:
 1. Run `bench --site learning.test install-app lms`.
 1. Now open the URL `http://learning.test:8000/lms` in your browser, you should see the app running
 
-## Learn and connect
+## Credits
 
-- [Frappe Framework](https://frappeframework.com/docs)
+Pramitya is built on the open-source Frappe Learning platform.
+See [ATTRIBUTION.md](./ATTRIBUTION.md) for licensing and upstream credits.
 
-<br>
-<br>
-<div align="center" style="padding-top: 0.75rem;">
-	<a href="https://frappe.io" target="_blank">
-		<picture>
-			<source media="(prefers-color-scheme: dark)" srcset="https://frappe.io/files/Frappe-white.png">
-			<img src="https://frappe.io/files/Frappe-black.png" alt="Frappe Technologies" height="28"/>
-		</picture>
-	</a>
-</div>
+Framework reference: [Frappe Framework docs](https://frappeframework.com/docs)
+
