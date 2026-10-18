@@ -6,7 +6,7 @@
 			</span>
 			<span class="min-w-0">
 				<span class="block truncate text-[15px] font-semibold leading-5 sm:text-lg">
-					{{ brand.name || 'Unnati Development LMS' }}
+					{{ brand.name || 'Pramitya' }}
 				</span>
 				<span class="hidden text-xs text-blue-100/80 sm:block">
 					Linux, Cloud, DevOps & trusted credentials

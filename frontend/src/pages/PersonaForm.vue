@@ -18,7 +18,7 @@
 
 				<div class="mb-5">
 					<div class="text-sm text-gray-700 mb-2">
-						{{ __('What is your use case for Unnati LMS?') }}
+						{{ __('What is your use case for Pramitya?') }}
 					</div>
 					<FormControl
 						v-model="persona.useCase"

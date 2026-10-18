@@ -1772,7 +1772,7 @@ def get_progress_distribution(progressList: list):
 
 @frappe.whitelist(allow_guest=True)
 def get_pwa_manifest():
-	title = frappe.db.get_single_value("Website Settings", "app_name") or "Unnati Development LMS"
+	title = frappe.db.get_single_value("Website Settings", "app_name") or "Pramitya"
 	banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
 	manifest = {

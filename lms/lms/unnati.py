@@ -441,8 +441,8 @@ def seed_unnati_demo():
 
 
 def _configure_branding():
-	frappe.db.set_single_value("System Settings", "app_name", "Unnati Development LMS")
-	frappe.db.set_single_value("Website Settings", "app_name", "Unnati Development LMS")
+	frappe.db.set_single_value("System Settings", "app_name", "Pramitya")
+	frappe.db.set_single_value("Website Settings", "app_name", "Pramitya")
 	settings = {
 		"allow_guest_access": 1,
 		"contact_us_email": UNNATI_PROFILE["email"],

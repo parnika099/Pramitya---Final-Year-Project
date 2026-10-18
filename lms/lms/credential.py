@@ -1,4 +1,4 @@
-"""Tamper-evident credential proof demonstration for Unnati LMS.
+"""Tamper-evident credential proof demonstration for Pramitya.
 
 This module deliberately keeps the ledger inside Frappe.  It demonstrates the
 hashing, policy and verification properties of a credential blockchain without
@@ -42,7 +42,7 @@ def member_commitment(member: str) -> str:
 
 def certificate_payload(certificate: Any) -> dict[str, str]:
 	"""Return the canonical private payload used to detect later changes."""
-	issuer = frappe.db.get_single_value("Website Settings", "app_name") or "Unnati Development LMS"
+	issuer = frappe.db.get_single_value("Website Settings", "app_name") or "Pramitya"
 	return {
 		"version": CONTRACT_VERSION,
 		"certificate": _normalise(certificate.name),
@@ -198,7 +198,7 @@ def _verification_result(token: str) -> dict[str, Any]:
 		and previous_valid
 	)
 	status = "genuine" if valid else "modified"
-	issuer = frappe.db.get_single_value("Website Settings", "app_name") or "Unnati Development LMS"
+	issuer = frappe.db.get_single_value("Website Settings", "app_name") or "Pramitya"
 	return {
 		"status": status,
 		"title": _("Credential verified") if valid else _("Credential has changed"),

@@ -3,11 +3,11 @@ import frappe
 from . import __version__ as app_version
 
 app_name = "frappe_lms"
-app_title = "Unnati Development LMS"
+app_title = "Pramitya"
 app_publisher = "Unnati Development Institute"
 app_description = "Linux, cloud and DevOps learning management system with practical assessments and AI viva"
 app_icon_url = "/assets/lms/images/lms-logo.png"
-app_icon_title = "Unnati LMS"
+app_icon_title = "Pramitya"
 app_icon_route = "/lms"
 app_color = "grey"
 app_email = "training@unnatidevelopment.in"

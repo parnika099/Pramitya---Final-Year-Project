@@ -29,7 +29,7 @@
 							>
 								{{ branding.data?.app_name }}
 							</span>
-							<span v-else> Unnati LMS </span>
+							<span v-else> Pramitya </span>
 						</div>
 						<div
 							v-if="userResource.data"
